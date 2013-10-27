@@ -1,0 +1,4 @@
+shopify_ninja_shopify:
+    resource: "@ShopifyNinjaShopifyBundle/Resources/config/routing.yml"
+    prefix:   /
+
