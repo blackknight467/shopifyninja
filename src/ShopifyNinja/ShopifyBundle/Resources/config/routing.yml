@@ -1,3 +1,50 @@
 shopify_ninja_shopify_homepage:
-    pattern:  /hello/{name}
+    pattern:  /hello/{name}/
     defaults: { _controller: ShopifyNinjaShopifyBundle:Default:index }
+
+shopify_ninja_products:
+    pattern:  /products/
+    defaults: { _controller:ShopifyNinjaShopifyBundle:Default:products, _format: ~ }
+    requirements:
+        _method: GET
+
+shopify_ninja_variants:
+    pattern:  /variants/
+    defaults: { _controller:ShopifyNinjaShopifyBundle:Default:variants, _format: ~ }
+    requirements:
+        _method: GET
+
+shopify_ninja_images:
+    pattern:  /images/{products}/
+    defaults: { _controller:ShopifyNinjaShopifyBundle:Default:images, _format: ~ }
+    requirements:
+        _method: GET
+
+shopify_ninja_combo:
+    pattern:  /combot/{product}/
+    defaults: { _controller:ShopifyNinjaShopifyBundle:Default:combo, _format: ~ }
+    requirements:
+        _method: GET
+        product: \d+
+
+shopify_ninja_sync:
+    pattern:  /sync/
+    defaults: { _controller: ShopifyNinjaShopifyBundle:Default:sync, _format: ~ }
+    requirements:
+        _method: POST
+
+shopify_ninja_update_stock:
+    pattern:  /stock/{variant}/{quantity}/
+    defaults: { _controller: ShopifyNinjaShopifyBundle:Default:stock, _format: ~ }
+    requirements:
+        _method: POST
+        variant: \d+
+        quantity: \d+
+
+shopify_ninja_combo_make:
+    pattern:  /combo/{product}/{entry}/
+    defaults: { _controller: ShopifyNinjaShopifyBundle:Default:makeCombo, _format: ~ }
+    requirements:
+        _method: POST
+        product: \d+
+        entry: \d+

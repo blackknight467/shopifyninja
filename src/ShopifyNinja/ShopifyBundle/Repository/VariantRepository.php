@@ -12,4 +12,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class VariantRepository extends EntityRepository
 {
+	public function getAllVariants($array = false) {
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+		$queryBuilder->select(array('v'))
+			->from('ShopifyNinjaShopifyBundle:Variants', 'v');
+
+		if ($array) {
+			return $queryBuilder->getQuery()->getArrayResult();
+		}
+
+		return $queryBuilder->getQuery()->getResult();
+
+	}
 }

@@ -3,6 +3,7 @@
 namespace ShopifyNinja\ShopifyBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use ShopifyNinja\ShopifyBundle\Entity\Product;
 
 /**
  * ProductRepository
@@ -12,4 +13,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductRepository extends EntityRepository
 {
+	public function getAllProducts($array = false) {
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+		$queryBuilder->select(array('p'))
+			->from('ShopifyNinjaShopifyBundle:Product', 'p');
+
+		if ($array) {
+			return $queryBuilder->getQuery()->getArrayResult();
+		}
+
+		return $queryBuilder->getQuery()->getResult();
+
+	}
 }

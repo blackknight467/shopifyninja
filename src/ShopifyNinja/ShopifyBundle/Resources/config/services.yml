@@ -1,7 +1,10 @@
 parameters:
-#    shopify_ninja_shopify.example.class: ShopifyNinja\ShopifyBundle\Example
+    shopify_key: a19cc6b13dbc3ef54c21a0712e2dbd21
+    shopify_password: 72a53c799f6a585adccb3897d3ed9653
+    shopify_secret: 8823753404d03e39ef83c5d3125a2f8d
+    shopify_shop: blackknight467
 
 services:
-#    shopify_ninja_shopify.example:
-#        class: %shopify_ninja_shopify.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+   shopify:
+       class: ShopifyNinja\ShopifyBundle\Service\ShopifyService
+       arguments: [@service_container, @doctrine.orm.entity_manager, %shopify_key%, %shopify_password%, %shopify_secret%, %shopify_shop%]

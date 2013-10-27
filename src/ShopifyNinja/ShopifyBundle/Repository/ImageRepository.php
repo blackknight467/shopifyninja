@@ -12,4 +12,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class ImageRepository extends EntityRepository
 {
+	public function getImagesForProduct($ids, $array = false) {
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+		$queryBuilder->select(array('i'))
+			->from('ShopifyNinjaShopifyBundle:Image', 'i')
+			->where($queryBuilder->expr()->in('i.product', $ids));
+			
+		if ($array) {
+			return $queryBuilder->getQuery()->getArrayResult();
+		}
+
+		return $queryBuilder->getQuery()->getResult();
+
+	}
 }
