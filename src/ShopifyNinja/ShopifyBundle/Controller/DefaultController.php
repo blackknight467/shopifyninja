@@ -77,7 +77,7 @@ class DefaultController extends Controller
     {
     	$all = $this->goComboGo($product);
     	foreach ($all as $key => $value) {
-    		if($value['entry'] == intval($entry) && $value['exists'] == false) {
+    		if(($value['entry'] == intval($entry) && $value['exists'] == false) || (intval($entry) == 0 && $value['exists'] == false)) {
     			$p = $this->get('shopify')->getProductsByIds(array($product));
     			if (empty($p)) {
     				$response = new Response(json_encode(array('success' => 0)));
@@ -98,7 +98,7 @@ class DefaultController extends Controller
     			$variant->setUpdated($now);
     			$variant->setCreated($now);
     			$variant->setPrice("1.00");
-    			$variant->setId(intval($product) + intval($entry));
+    			$variant->setId(intval($product) + intval($value['entry']));
     			$this->get('shopify')->save($variant);
     		}
     	}
