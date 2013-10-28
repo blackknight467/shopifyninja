@@ -40,7 +40,7 @@ class VariantRepository extends EntityRepository
 
 	}
 
-	public function getByOptions($option1, $option2, $option3) {
+	public function getByOptions($pid, $option1, $option2, $option3) {
 		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
 		$queryBuilder->select(array('v', 'p'))
@@ -49,9 +49,11 @@ class VariantRepository extends EntityRepository
 			->where('v.option1 = :op1')
 			->andWhere('v.option2 = :op2')
 			->andWhere('v.option3 = :op3')
+			->andWhere('p.id = :pid')
 			->setParameter('op1', $option1)
 			->setParameter('op2', $option2)
-			->setParameter('op3', $option3);
+			->setParameter('op3', $option3)
+			->setParameter('pid', $pid);
 
 		return $queryBuilder->getQuery()->getOneOrNullResult();
 

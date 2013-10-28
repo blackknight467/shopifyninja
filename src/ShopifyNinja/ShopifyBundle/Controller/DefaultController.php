@@ -77,7 +77,7 @@ class DefaultController extends Controller
     {
     	$all = $this->goComboGo($product);
     	foreach ($all as $key => $value) {
-    		if($value['entry'] == intval($entry)) {
+    		if($value['entry'] == intval($entry) && $value['exists'] == false) {
     			$p = $this->get('shopify')->getProductsByIds(array($product));
     			if (empty($p)) {
     				$response = new Response(json_encode(array('success' => 0)));
@@ -133,21 +133,21 @@ class DefaultController extends Controller
 	    			if (!empty($option3)) {
 		    			foreach ($option3 as $key3 => $value3) {
 		    				$temp =  array('entry'=>$count,'1'=>$key1, '2'=>$key2, '3'=>$key3);
-		    				$temp['exists'] = $this->variantExists($temp);
+		    				$temp['exists'] = $this->variantExists($product, $temp);
 		    				$all[] = $temp;
 		    				$count++;
 		    			}
 	    			}
 	    			else {
 	    				$temp = array('entry'=>$count,'1'=>$key1, '2'=>$key2);
-	    				$temp['exists'] = $this->variantExists($temp);
+	    				$temp['exists'] = $this->variantExists($product, $temp);
 		    			$all[] = $temp;
 		    			$count++;
 	    			}
 	    		}
     		} else {
     			$temp = array('entry'=>$count,'1'=>$key1);
-    			$temp['exists'] = $this->variantExists($temp);
+    			$temp['exists'] = $this->variantExists($product, $temp);
 		    	$all[] = $temp;
 		    	$count++;
     		}
@@ -156,14 +156,14 @@ class DefaultController extends Controller
     	return $all;
     }
 
-    private function variantExists($value)
+    private function variantExists($pid, $value)
     {
     	if(array_key_exists('3', $value)) {
-    			$result = $this->get('shopify')->getVariantByOptions($value['1'], $value['2'], $value['3']);
+    			$result = $this->get('shopify')->getVariantByOptions($pid, $value['1'], $value['2'], $value['3']);
     		} elseif (array_key_exists('2', $value)) {
-				$result = $this->get('shopify')->getVariantByOptions($value['1'], $value['2']);
+				$result = $this->get('shopify')->getVariantByOptions($pid, $value['1'], $value['2']);
     		} else {
-    			$result = $this->get('shopify')->getVariantByOptions($value['1']);
+    			$result = $this->get('shopify')->getVariantByOptions($pid, $value['1']);
     		}
     		if ($result != null) {
     			return true;

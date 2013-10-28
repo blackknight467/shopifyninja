@@ -66,9 +66,9 @@ class ShopifyService
 		return $this->em->getRepository('ShopifyNinjaShopifyBundle:Variant')->getById($id);
 	}
 
-	public function getVariantByOptions($option1, $option2 = null, $option3 = null)
+	public function getVariantByOptions($pid, $option1, $option2 = null, $option3 = null)
 	{
-		return $this->em->getRepository('ShopifyNinjaShopifyBundle:Variant')->getByOptions($option1, $option2, $option3);
+		return $this->em->getRepository('ShopifyNinjaShopifyBundle:Variant')->getByOptions($pid, $option1, $option2, $option3);
 	}
 
 	public function getAllVariants($array = false)
@@ -210,8 +210,8 @@ class ShopifyService
 					$data_string = json_encode($newVariant);
 					$ch = curl_init($query);        
 					# Return response instead of printing.
-					curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );  
-					curl_setopt( $ch, CURLOPT_POSTFIELDS, $data_string );                      
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true );  
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string );                      
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                                                                                        
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
 					    'Content-Type: application/json',                                                                                
