@@ -21,7 +21,7 @@ shopify_ninja_images:
         _method: GET
 
 shopify_ninja_combo:
-    pattern:  /combot/{product}/
+    pattern:  /combo/{product}/
     defaults: { _controller:ShopifyNinjaShopifyBundle:Default:combo, _format: ~ }
     requirements:
         _method: GET
