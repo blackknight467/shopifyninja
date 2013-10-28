@@ -23,7 +23,7 @@ class DefaultController extends Controller
 
     public function variantsAction()
     {
-    	$products = $this->get('shopify')->getAllProducts(true);
+    	$products = $this->get('shopify')->getAllVariants(true);
         $response = new Response(json_encode($products));
 		$response->headers->set('Content-Type', 'application/json');
 
@@ -33,9 +33,17 @@ class DefaultController extends Controller
     public function imagesAction($products)
     {
     	$productArray = explode(',', $products);
+    	$images = $this->get('shopify')->getImagesForProduct($productArray, true);
+        $response = new Response(json_encode($images));
+		$response->headers->set('Content-Type', 'application/json');
 
-    	$products = $this->get('shopify')->getImagesForProduct($productArray, true);
-        $response = new Response(json_encode($products));
+		return $response;
+    }
+
+    public function syncAction()
+    {
+    	$products = $this->get('shopify')->sync();
+        $response = new Response(json_encode(array('success' => 1)));
 		$response->headers->set('Content-Type', 'application/json');
 
 		return $response;

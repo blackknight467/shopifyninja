@@ -14,7 +14,6 @@ class Image
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -53,6 +52,16 @@ class Image
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set id 
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -168,5 +177,15 @@ class Image
     public function getSource()
     {
         return $this->source;
+    }
+
+    public function loadFromArray($image)
+    {
+        $this->setCreated(new \DateTime($image['created_at']));
+        $this->setPosition($image['position']);
+        $this->setUpdated(new \DateTime($image['updated_at']));
+        $this->setSource($image['src']);
+
+        return $this;
     }
 }

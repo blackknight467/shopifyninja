@@ -14,7 +14,6 @@ class ShopifyOption
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -43,6 +42,16 @@ class ShopifyOption
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set id 
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -112,5 +121,13 @@ class ShopifyOption
     public function getProduct()
     {
         return $this->product;
+    }
+
+    public function loadFromArray($option)
+    {
+        $this->setName($option['name']);
+        $this->setPosition($option['position']);
+
+        return $this;
     }
 }

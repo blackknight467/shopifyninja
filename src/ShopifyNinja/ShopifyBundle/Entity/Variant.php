@@ -14,12 +14,11 @@ class Variant
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $barcode;
 
@@ -123,6 +122,16 @@ class Variant
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set id 
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -560,5 +569,29 @@ class Variant
     public function getInventoryQuantity()
     {
         return $this->inventoryQuantity;
+    }
+
+    public function loadFromArray($variant)
+    {
+        $this->setBarcode($variant['barcode']);
+        $this->setCompare($variant['compare_at_price']);
+        $this->setCreated(new \DateTime($variant['created_at']));
+        $this->setFulfillment($variant['fulfillment_service']);
+        $this->setGrams($variant['grams']);
+        $this->setInventoryManagement($variant['inventory_management']);
+        $this->setInventroyPolicy($variant['inventory_policy']);
+        $this->setOption1($variant['option1']);
+        $this->setOption2($variant['option2']);
+        $this->setOption3($variant['option3']);
+        $this->setPosition($variant['position']);
+        $this->setPrice($variant['price']);
+        $this->setShipping($variant['requires_shipping']);
+        $this->setSku($variant['sku']);
+        $this->setTaxable($variant['taxable']);
+        $this->setTitle($variant['title']);
+        $this->setUpdated(new \DateTime($variant['updated_at']));
+        $this->setInventoryQuantity($variant['inventory_quantity']);
+
+        return $this;
     }
 }

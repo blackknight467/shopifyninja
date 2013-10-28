@@ -14,7 +14,6 @@ class Product
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -22,6 +21,11 @@ class Product
      * @ORM\Column(type="text")
      */
     private $body;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $handle;
 
     /**
      * @ORM\Column(type="datetime")
@@ -101,6 +105,16 @@ class Product
     }
 
     /**
+     * Set id 
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Set body
      *
      * @param string $body
@@ -122,6 +136,30 @@ class Product
     {
         return $this->body;
     }
+
+    /**
+     * Get handle
+     *
+     * @return string 
+     */
+    public function getHandle()
+    {
+        return $this->handle;
+    }
+
+    /**
+     * Set handle
+     *
+     * @param string $body
+     * @return Product
+     */
+    public function setHandle($handle)
+    {
+        $this->handle = $handle;
+    
+        return $this;
+    }
+
 
     /**
      * Set created
@@ -420,5 +458,22 @@ class Product
     public function getImage()
     {
         return $this->image;
+    }
+
+    public function loadFromArray($product)
+    {
+        $this->setBody($product['body_html']);
+        $this->setCreated(new \DateTime($product['created_at']));
+        $this->setHandle($product['handle']);
+        $this->setType($product['product_type']);
+        $this->setPublished(new \DateTime($product['published_at']));
+        $this->setScope($product['published_scope']);
+        $this->setTemplate($product['template_suffix']);
+        $this->setTitle($product['title']);
+        $this->setUpdated(new \DateTime($product['updated_at']));
+        $this->setVendor($product['vendor']);
+        $this->setTags($product['tags']);
+
+        return $this;
     }
 }

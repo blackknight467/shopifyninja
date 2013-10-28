@@ -15,10 +15,12 @@ class ImageRepository extends EntityRepository
 	public function getImagesForProduct($ids, $array = false) {
 		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
-		$queryBuilder->select(array('i'))
+		$queryBuilder->select(array('i','p'))
 			->from('ShopifyNinjaShopifyBundle:Image', 'i')
-			->where($queryBuilder->expr()->in('i.product', $ids));
-			
+			->leftJoin('i.product', 'p')
+			->where('p.id IN (:ids)')
+			->setParameter('ids', $ids);
+
 		if ($array) {
 			return $queryBuilder->getQuery()->getArrayResult();
 		}

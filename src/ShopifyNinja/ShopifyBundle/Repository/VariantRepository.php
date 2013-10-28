@@ -15,8 +15,9 @@ class VariantRepository extends EntityRepository
 	public function getAllVariants($array = false) {
 		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
 
-		$queryBuilder->select(array('v'))
-			->from('ShopifyNinjaShopifyBundle:Variants', 'v');
+		$queryBuilder->select(array('v', 'p'))
+			->from('ShopifyNinjaShopifyBundle:Variant', 'v')
+			->leftJoin('v.product', 'p');
 
 		if ($array) {
 			return $queryBuilder->getQuery()->getArrayResult();
@@ -24,5 +25,34 @@ class VariantRepository extends EntityRepository
 
 		return $queryBuilder->getQuery()->getResult();
 
+	}
+
+	public function getById($id) {
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+		$queryBuilder->select(array('v', 'p'))
+			->from('ShopifyNinjaShopifyBundle:Variant', 'v')
+			->leftJoin('v.product', 'p')
+			->where('v.id = :id')
+			->setParameter('id', $id);
+
+		return $queryBuilder->getQuery()->getOneOrNullResult();
+
+	}
+
+
+	public function getVariantsForProduct($prod, $array = false) {
+		$queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+		$queryBuilder->select(array('v'))
+			->from('ShopifyNinjaShopifyBundle:Variant', 'v')
+			->where('v.product = :prod')
+			->setParameter('prod', $prod);
+			
+		if ($array) {
+			return $queryBuilder->getQuery()->getArrayResult();
+		}
+
+		return $queryBuilder->getQuery()->getResult();
 	}
 }

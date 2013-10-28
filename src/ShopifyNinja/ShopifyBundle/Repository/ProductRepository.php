@@ -26,4 +26,29 @@ class ProductRepository extends EntityRepository
 		return $queryBuilder->getQuery()->getResult();
 
 	}
+
+	public function getById($id){
+		$query = $this->createQueryBuilder('p')
+			->select('p')
+			->where('p.id = :id')
+			->setParameter('id', $id)
+			->getQuery();
+
+		return $queryBuilder->getQuery()->getOneOrNullResult();
+
+	}
+
+	public function getByIds($ids){
+		$query = $this->createQueryBuilder('p')
+			->select('p')
+			->where('p.id IN (:ids)')
+			->setParameter('ids', $ids)
+			->getQuery();
+
+		try {
+			return $query->getResult();
+		} catch(\Doctrine\Orm\NoResultException $e) {
+			return null;
+		}
+	}
 }
