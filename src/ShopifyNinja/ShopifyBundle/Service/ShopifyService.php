@@ -66,6 +66,11 @@ class ShopifyService
 		return $this->em->getRepository('ShopifyNinjaShopifyBundle:Variant')->getById($id);
 	}
 
+	public function getVariantByOptions($option1, $option2 = null, $option3 = null)
+	{
+		return $this->em->getRepository('ShopifyNinjaShopifyBundle:Variant')->getByOptions($option1, $option2, $option3);
+	}
+
 	public function getAllVariants($array = false)
 	{
 		return $this->em->getRepository('ShopifyNinjaShopifyBundle:Variant')->getAllVariants($array);

@@ -114,22 +114,45 @@ class DefaultController extends Controller
 	    		foreach ($option2 as $key2 => $value2) {
 	    			if (!empty($option3)) {
 		    			foreach ($option3 as $key3 => $value3) {
-		    				$all[] = array('entry'=>$count,'1'=>$key1, '2'=>$key2, '3'=>$key3);
+		    				$temp =  array('entry'=>$count,'1'=>$key1, '2'=>$key2, '3'=>$key3);
+		    				$temp['exists'] = $this->variantExists($temp);
+		    				$all[] = $temp;
 		    				$count++;
 		    			}
 	    			}
 	    			else {
-	    				$all[] = array('entry'=>$count,'1'=>$key1, '2'=>$key2);
+	    				$temp = array('entry'=>$count,'1'=>$key1, '2'=>$key2);
+	    				$temp['exists'] = $this->variantExists($temp);
+		    			$all[] = $temp;
 		    			$count++;
 	    			}
 	    		}
     		} else {
-    			$all[] = array('entry'=>$count,'1'=>$key1);
+    			$temp = array('entry'=>$count,'1'=>$key1);
+    			$temp['exists'] = $this->variantExists($temp);
+		    	$all[] = $temp;
 		    	$count++;
     		}
     	}
 
     	return $all;
+    }
+
+    private function variantExists($value)
+    {
+    	if(array_key_exists('3', $value)) {
+    			$result = $this->get('shopify')->getVariantByOptions($value['1'], $value['2'], $value['3']);
+    		} elseif (array_key_exists('2', $value)) {
+				$result = $this->get('shopify')->getVariantByOptions($value['1'], $value['2']);
+    		} else {
+    			$result = $this->get('shopify')->getVariantByOptions($value['1']);
+    		}
+    		if ($result != null) {
+    			return true;
+    		} 
+
+    		return false;
+    		
     }
 
 }
