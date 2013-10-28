@@ -112,7 +112,7 @@ class ShopifyService
 		curl_setopt_array($ch, $curlOpts);
 
 		$return = curl_exec($ch);
-
+		curl_close($ch);
 		if ($return === false) {
 			// throw exception 
 		}
@@ -191,31 +191,41 @@ class ShopifyService
 			foreach ($variants as $v) {
 				$match = false;
 				foreach ($return['products'] as $product) {
-					foreach ($product['variants'] as $variant) {
-						if ($v->getId() == $variant['id']) {
+					foreach ($product['variants'] as $var) {
+						if ($v->getId() == $var['id']) {
 							$match = true;
-						}
+						} 
 					}
 				}
 				if (!$match) {
 					//make a post
-					$query = $this->apibase . '/admin/products/'.$v->getProduct->getId().'varaints.json';
-					$encoders = array(new XmlEncoder(), new JsonEncoder());
-					$normalizers = array(new GetSetMethodNormalizer());
-
-					$serializer = new Serializer($normalizers, $encoders);
-					$data_string = $serializer->serialize($v, 'json');                                                                                                                                                 
- 
-					$ch = curl_init($query);                                                                      
-					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
-					curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);                                                                  
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+					$query = $this->apibase . '/admin/products/'.$v->getProduct()->getId().'/variants.json';
+					$newVariant = array('variant' => array('price' => $v->getPrice(), 'option1'=>$v->getOption1()));
+					if ($v->getOption3() != null) {
+						$newVariant = array('variant' => array('price' => $v->getPrice(), 'option1'=>$v->getOption1(), 'option2'=> $v->getOption2(), 'option3'=> $v->getOption3()));
+					} elseif ($v->getOption2() != null) {
+						$newVariant = array('variant' => array('price' => $v->getPrice(), 'option1'=>$v->getOption1(), 'option2'=> $v->getOption2()));
+					}
+					
+					$data_string = json_encode($newVariant);
+					$ch = curl_init($query);        
+					# Return response instead of printing.
+					curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );  
+					curl_setopt( $ch, CURLOPT_POSTFIELDS, $data_string );                      
+					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                                                                                        
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
 					    'Content-Type: application/json',                                                                                
 					    'Content-Length: ' . strlen($data_string))                                                                       
 					);                                                                                                                   
  
 					$result = curl_exec($ch);
+					$shopV = json_decode($result, true);
+					if (array_key_exists('variant', $shopV) ){
+						$newV = $shopV['variant'];
+						$v->setId($newV['id']);
+						$v->loadFromArray($newV);
+						$this->save($v);
+					}
 				}
 			}
 
@@ -231,8 +241,8 @@ class ShopifyService
 					if ($var->getUpdated() > $updated) {
 						//send update to shopify
 						//the we only update stock so that's all we'll send
-						$query = $this->apibase . '/admin/varaints/'.$var->getId().'.json';
-						$thing = array('varaint' => array('id'=>$var->getId(), 'inventory_quantity'=>$var->getInventoryQuantity()));
+						$query = $this->apibase . '/admin/variants/'.$var->getId().'.json';
+						$thing = array('variant' => array('id'=>$var->getId(), 'inventory_quantity'=>$var->getInventoryQuantity()));
 						$data_string = json_encode($thing);
 						$ch = curl_init($query);                                                             
 						curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");                                                                     
@@ -244,6 +254,13 @@ class ShopifyService
 						);                                                                                                                   
 	 
 						$result = curl_exec($ch);
+						$shopV = json_decode($result, true);
+						if (array_key_exists('variant', $shopV) ){
+							$newV = $shopV['variant'];
+							$v->setId($newV['id']);
+							$v->loadFromArray($newV);
+							$this->save($v);
+						}
 					} 
 					else {
 						//update our db
@@ -256,4 +273,5 @@ class ShopifyService
 
 		}//end else
 	}
+
 }

@@ -50,6 +50,20 @@ class DefaultController extends Controller
 		return $response;
     }
 
+    public function stockAction($variant, $quantity)
+    {
+    	$variant = $this->get('shopify')->getVariantById($variant);
+    	$variant->setInventoryQuantity(intval($quantity));
+    	$now = new \DateTime();
+    	$variant->setUpdated($now);
+    	$this->get('shopify')->save($variant);
+
+    	$response = new Response(json_encode(array('success' => 1)));
+		$response->headers->set('Content-Type', 'application/json');
+
+		return $response;
+    }
+
     public function comboAction($product)
     {
     	$all = $this->goComboGo($product);
@@ -64,11 +78,16 @@ class DefaultController extends Controller
     	$all = $this->goComboGo($product);
     	foreach ($all as $key => $value) {
     		if($value['entry'] == intval($entry)) {
-    			$p = $this->get('shopify')->getProductById($product);
-    			ldd($p);
+    			$p = $this->get('shopify')->getProductsByIds(array($product));
+    			if (empty($p)) {
+    				$response = new Response(json_encode(array('success' => 0)));
+					$response->headers->set('Content-Type', 'application/json');
+
+					return $response;
+    			}
     			$now = new \DateTime();
     			$variant = new Variant();
-    			$variant->setProduct($p);
+    			$variant->setProduct($p[0]);
     			$variant->setOption1($value['1']);
     			if (array_key_exists('2', $value)) {
     				$variant->setOption2($value['2']);
@@ -80,7 +99,6 @@ class DefaultController extends Controller
     			$variant->setCreated($now);
     			$variant->setPrice("1.00");
     			$variant->setId(intval($product) + intval($entry));
-    			ldd($variant);
     			$this->get('shopify')->save($variant);
     		}
     	}
